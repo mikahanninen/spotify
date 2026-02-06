@@ -9,22 +9,8 @@ This project demonstrates UI automation techniques to interact with Spotify with
 | Platform | Status | Implementation |
 |----------|--------|----------------|
 | macOS    | Fully implemented | AppleScript + System Events |
-| Windows  | Implemented (partial) | rpaframework-windows |
+| Windows  | Not implemented | Contributions welcome! |
 | Linux    | Not supported | - |
-
-### Windows Limitations
-
-Windows implementation has some limitations compared to macOS due to lack of native Spotify API:
-
-| Feature | macOS | Windows |
-|---------|-------|---------|
-| Play/Pause/Next/Prev | Yes | Yes (media keys) |
-| Search & Play Playlist | Yes | Yes |
-| Track name/artist | Yes | Yes (from window title) |
-| Album name | Yes | No |
-| Duration/Position | Yes | No |
-| Volume control | Yes | No |
-| Shuffle/Repeat | Yes | No |
 
 ## Task
 
@@ -39,15 +25,6 @@ This solution implements the following RPA task:
 - **Python 3.7+**
 - **Spotify desktop application** installed
 - **Accessibility permissions** enabled for Terminal/IDE
-
-### Windows
-- **Python 3.9+** (required by rpaframework-windows)
-- **Spotify desktop application** installed
-- **rpaframework-windows** package (installed automatically via requirements.txt)
-
-```bash
-pip install -r requirements.txt
-```
 
 ## macOS Setup
 
@@ -81,7 +58,6 @@ pip install -r requirements.txt
 ```
 
 - **macOS**: No external dependencies (uses Python standard library only)
-- **Windows**: Installs `rpaframework-windows` automatically
 
 ## Usage
 
@@ -93,7 +69,7 @@ python spotify.py play-playlist "Göstän parhaat"
 
 This will:
 1. Launch Spotify (or bring it to front if already running)
-2. Open the search overlay (Cmd+K on macOS, Ctrl+K on Windows)
+2. Open the search overlay (Cmd+K)
 3. Search for the playlist by name
 4. Select the first search result
 5. Play the first song
@@ -164,14 +140,14 @@ SpotifyRPA (Facade)
             │
             ├── MacOSSpotifyController (AppleScript + System Events)
             │
-            └── WindowsSpotifyController (rpaframework-windows)
+            └── WindowsSpotifyController (not implemented)
 ```
 
 ### Key Components
 
 - **`SpotifyControllerBase`**: Abstract base class defining the interface for all platforms
 - **`MacOSSpotifyController`**: macOS implementation using AppleScript
-- **`WindowsSpotifyController`**: Windows implementation using rpaframework-windows
+- **`WindowsSpotifyController`**: Placeholder for Windows (contributions welcome!)
 - **`SpotifyRPA`**: Facade class that auto-detects platform and delegates to the appropriate controller
 - **`create_spotify_controller()`**: Factory function for creating platform-specific controllers
 
@@ -209,15 +185,6 @@ tell application "System Events"
 end tell
 ```
 
-### Windows Implementation
-
-The Windows implementation uses **rpaframework-windows** for UI automation:
-
-- **Window control**: `control_window("executable:Spotify.exe")` to find and focus Spotify
-- **Media keys**: `send_keys("{MEDIA_PLAY_PAUSE}")` for playback control
-- **Keyboard input**: `send_keys("{Ctrl}k")` for search, typing text
-- **Track info**: Parsed from window title (format: "Artist - Song - Spotify")
-
 ### RPA Approach
 
 This is a genuine RPA solution because it:
@@ -228,11 +195,10 @@ This is a genuine RPA solution because it:
 
 ## Limitations
 
-- **Windows features**: Some features (volume, position, shuffle/repeat) not available on Windows
+- **macOS only**: Currently only macOS is supported (Windows contributions welcome!)
 - **UI-dependent**: May break if Spotify significantly changes their UI
 - **Timing-sensitive**: Uses delays to wait for UI responses
-- **Accessibility required**: Needs permission to control the system (macOS)
-- **Display scaling**: Windows users should use 100% display scaling for best results
+- **Accessibility required**: Needs permission to control the system
 
 ## Project Structure
 
@@ -245,11 +211,11 @@ spotify-rpa/
 │   ├── exceptions.py       # Custom exceptions
 │   ├── base.py             # Abstract base controller
 │   ├── macos.py            # macOS implementation
-│   ├── windows.py          # Windows implementation (rpaframework-windows)
+│   ├── windows.py          # Windows placeholder (not implemented)
 │   ├── controller.py       # Factory and SpotifyRPA facade
 │   └── cli.py              # CLI commands
 ├── README.md               # This file
-└── requirements.txt        # Dependencies (rpaframework-windows for Windows)
+└── requirements.txt        # Dependencies (none required for macOS)
 ```
 
 ## Why Python?

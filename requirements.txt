@@ -1,8 +1,5 @@
 # Spotify RPA - Python Dependencies
 #
 # macOS: Uses only Python standard library modules (no external packages required)
-# Windows: Requires rpaframework-windows for UI automation
+# Windows: Not yet implemented
 #
-
-# Windows-only dependency (installed only on Windows)
-rpaframework-windows>=10.0.0; sys_platform == "win32"
