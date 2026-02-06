@@ -38,102 +38,82 @@ class SpotifyControllerBase(ABC):
     @abstractmethod
     def launch(self, wait: bool = True, delay: Optional[float] = None) -> None:
         """Launch the Spotify application."""
-        pass
     
     @abstractmethod
     def quit(self) -> None:
         """Quit the Spotify application."""
-        pass
     
     @abstractmethod
     def is_running(self) -> bool:
         """Check if Spotify is currently running."""
-        pass
     
     @abstractmethod
     def bring_to_front(self) -> None:
         """Bring the Spotify window to the front."""
-        pass
     
     @abstractmethod
     def play(self) -> None:
         """Start or resume playback."""
-        pass
     
     @abstractmethod
     def pause(self) -> None:
         """Pause playback."""
-        pass
     
     @abstractmethod
     def play_pause(self) -> None:
         """Toggle between play and pause."""
-        pass
     
     @abstractmethod
     def next_track(self) -> None:
         """Skip to the next track."""
-        pass
     
     @abstractmethod
     def previous_track(self) -> None:
         """Go back to the previous track."""
-        pass
     
     @abstractmethod
     def set_volume(self, level: int) -> None:
         """Set the Spotify volume (0-100)."""
-        pass
     
     @abstractmethod
     def get_volume(self) -> int:
         """Get the current Spotify volume."""
-        pass
     
     @abstractmethod
     def get_player_state(self) -> str:
         """Get the current player state (playing, paused, stopped)."""
-        pass
     
     @abstractmethod
     def get_player_position(self) -> float:
         """Get the current playback position in seconds."""
-        pass
     
     @abstractmethod
     def set_player_position(self, position: float) -> None:
         """Set the playback position."""
-        pass
     
     @abstractmethod
     def get_current_track(self) -> Optional[TrackInfo]:
         """Get information about the currently playing track."""
-        pass
     
     @abstractmethod
     def play_track(self, spotify_uri: str) -> None:
         """Play a specific track by its Spotify URI."""
-        pass
     
     @abstractmethod
     def is_shuffling(self) -> bool:
         """Check if shuffle is enabled."""
-        pass
     
     @abstractmethod
     def is_repeating(self) -> bool:
         """Check if repeat is enabled."""
-        pass
     
     @abstractmethod
     def set_shuffling(self, enabled: bool) -> None:
         """Set shuffle mode."""
-        pass
     
     @abstractmethod
     def set_repeating(self, enabled: bool) -> None:
         """Set repeat mode."""
-        pass
     
     # =========================================================================
     # Abstract UI Automation Methods
@@ -142,52 +122,42 @@ class SpotifyControllerBase(ABC):
     @abstractmethod
     def _keystroke(self, key: str, modifiers: Optional[list] = None) -> None:
         """Send a keystroke to Spotify."""
-        pass
     
     @abstractmethod
     def _key_code(self, code: int, modifiers: Optional[list] = None) -> None:
         """Send a key code to Spotify."""
-        pass
     
     @abstractmethod
     def _type_text(self, text: str, delay_per_char: float = 0.02) -> None:
         """Type text into Spotify."""
-        pass
     
     @abstractmethod
     def _get_return_key_code(self) -> int:
         """Get platform-specific key code for Return/Enter."""
-        pass
     
     @abstractmethod
     def _get_escape_key_code(self) -> int:
         """Get platform-specific key code for Escape."""
-        pass
     
     @abstractmethod
     def _get_tab_key_code(self) -> int:
         """Get platform-specific key code for Tab."""
-        pass
     
     @abstractmethod
     def _get_down_arrow_key_code(self) -> int:
         """Get platform-specific key code for Down Arrow."""
-        pass
     
     @abstractmethod
     def _get_up_arrow_key_code(self) -> int:
         """Get platform-specific key code for Up Arrow."""
-        pass
     
     @abstractmethod
     def _get_space_key_code(self) -> int:
         """Get platform-specific key code for Space."""
-        pass
     
     @abstractmethod
     def _get_command_modifier(self) -> str:
         """Get the platform-specific command modifier (Cmd on Mac, Ctrl on Windows)."""
-        pass
     
     # =========================================================================
     # Concrete Methods - Shared across platforms

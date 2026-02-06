@@ -194,11 +194,7 @@ class MacOSSpotifyController(SpotifyControllerBase):
     # =========================================================================
     
     def play_track(self, spotify_uri: str) -> None:
-        """Play a specific track by its Spotify URI."""
-        self._run_applescript(f'tell application "Spotify" to play track "{spotify_uri}"')
-    
-    def play_playlist(self, spotify_uri: str) -> None:
-        """Play a specific playlist by its Spotify URI."""
+        """Play a specific track or playlist by its Spotify URI."""
         self._run_applescript(f'tell application "Spotify" to play track "{spotify_uri}"')
     
     # =========================================================================
@@ -231,45 +227,33 @@ class MacOSSpotifyController(SpotifyControllerBase):
     
     def _keystroke(self, key: str, modifiers: Optional[list] = None) -> None:
         """Send a keystroke to Spotify."""
+        using_clause = ""
         if modifiers:
             modifier_str = ", ".join(f"{m} down" for m in modifiers)
-            script = f'''
-            tell application "System Events"
-                tell process "Spotify"
-                    keystroke "{key}" using {{{modifier_str}}}
-                end tell
+            using_clause = f" using {{{modifier_str}}}"
+        script = f'''
+        tell application "System Events"
+            tell process "Spotify"
+                keystroke "{key}"{using_clause}
             end tell
-            '''
-        else:
-            script = f'''
-            tell application "System Events"
-                tell process "Spotify"
-                    keystroke "{key}"
-                end tell
-            end tell
-            '''
+        end tell
+        '''
         self._run_applescript(script)
         time.sleep(self.DEFAULT_KEYSTROKE_DELAY)
-    
+
     def _key_code(self, code: int, modifiers: Optional[list] = None) -> None:
         """Send a key code to Spotify."""
+        using_clause = ""
         if modifiers:
             modifier_str = ", ".join(f"{m} down" for m in modifiers)
-            script = f'''
-            tell application "System Events"
-                tell process "Spotify"
-                    key code {code} using {{{modifier_str}}}
-                end tell
+            using_clause = f" using {{{modifier_str}}}"
+        script = f'''
+        tell application "System Events"
+            tell process "Spotify"
+                key code {code}{using_clause}
             end tell
-            '''
-        else:
-            script = f'''
-            tell application "System Events"
-                tell process "Spotify"
-                    key code {code}
-                end tell
-            end tell
-            '''
+        end tell
+        '''
         self._run_applescript(script)
         time.sleep(self.DEFAULT_KEYSTROKE_DELAY)
     

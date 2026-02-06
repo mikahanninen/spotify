@@ -28,11 +28,11 @@ def print_status(spotify: SpotifyRPA) -> None:
 def verify_playback(spotify: SpotifyRPA, timeout: float = 3.0) -> bool:
     """
     Verify that playback has started.
-    
+
     Args:
         spotify: SpotifyRPA instance.
         timeout: Maximum time to wait for playback to start.
-    
+
     Returns:
         True if playing, False otherwise.
     """
@@ -42,6 +42,14 @@ def verify_playback(spotify: SpotifyRPA, timeout: float = 3.0) -> bool:
             return True
         time.sleep(0.3)
     return False
+
+
+def require_running(spotify: SpotifyRPA) -> bool:
+    """Check if Spotify is running, print error if not. Returns True if running."""
+    if not spotify.is_running():
+        print("Error: Spotify is not running.")
+        return False
+    return True
 
 
 # =============================================================================
@@ -94,10 +102,8 @@ def cmd_search(args, spotify: SpotifyRPA) -> int:
 
 def cmd_play(args, spotify: SpotifyRPA) -> int:
     """Execute the play command."""
-    if not spotify.is_running():
-        print("Error: Spotify is not running.")
+    if not require_running(spotify):
         return 1
-    
     spotify.play()
     print("Playback started.")
     time.sleep(0.5)
@@ -107,10 +113,8 @@ def cmd_play(args, spotify: SpotifyRPA) -> int:
 
 def cmd_pause(args, spotify: SpotifyRPA) -> int:
     """Execute the pause command."""
-    if not spotify.is_running():
-        print("Error: Spotify is not running.")
+    if not require_running(spotify):
         return 1
-    
     spotify.pause()
     print("Playback paused.")
     return 0
@@ -118,10 +122,8 @@ def cmd_pause(args, spotify: SpotifyRPA) -> int:
 
 def cmd_next(args, spotify: SpotifyRPA) -> int:
     """Execute the next track command."""
-    if not spotify.is_running():
-        print("Error: Spotify is not running.")
+    if not require_running(spotify):
         return 1
-    
     spotify.next_track()
     print("Skipped to next track.")
     time.sleep(0.5)
@@ -131,10 +133,8 @@ def cmd_next(args, spotify: SpotifyRPA) -> int:
 
 def cmd_prev(args, spotify: SpotifyRPA) -> int:
     """Execute the previous track command."""
-    if not spotify.is_running():
-        print("Error: Spotify is not running.")
+    if not require_running(spotify):
         return 1
-    
     spotify.previous_track()
     print("Went to previous track.")
     time.sleep(0.5)
@@ -154,17 +154,13 @@ def cmd_status(args, spotify: SpotifyRPA) -> int:
 
 def cmd_volume(args, spotify: SpotifyRPA) -> int:
     """Execute the volume command."""
-    if not spotify.is_running():
-        print("Error: Spotify is not running.")
+    if not require_running(spotify):
         return 1
-    
-    level = args.level
-    if level is None:
-        vol = spotify.get_volume()
-        print(f"Current volume: {vol}")
+    if args.level is None:
+        print(f"Current volume: {spotify.get_volume()}")
     else:
-        spotify.set_volume(level)
-        print(f"Volume set to: {level}")
+        spotify.set_volume(args.level)
+        print(f"Volume set to: {args.level}")
     return 0
 
 
