@@ -70,10 +70,11 @@ python spotify.py play-playlist "Göstän parhaat"
 This will:
 1. Launch Spotify (or bring it to front if already running)
 2. Open the search overlay (Cmd+K)
-3. Search for the playlist by name
-4. Select the first search result
-5. Play the first song
-6. Verify playback and show current track info
+3. Search for "playlist:Göstän parhaat" (filters to playlists only)
+4. Turn off shuffle mode
+5. Play the first song (Shift+Enter)
+6. Show the playlist (Enter)
+7. Verify playback and show current track info
 
 ### CLI Commands
 

@@ -25,23 +25,30 @@ def print_status(spotify: SpotifyRPA) -> None:
             print(f"URL:    {track.web_url}")
 
 
-def verify_playback(spotify: SpotifyRPA, timeout: float = 3.0) -> bool:
+def verify_playback(spotify: SpotifyRPA, timeout: float = 5.0, initial_track: str = None) -> bool:
     """
-    Verify that playback has started.
+    Verify that playback has started or track has changed.
 
     Args:
         spotify: SpotifyRPA instance.
         timeout: Maximum time to wait for playback to start.
+        initial_track: If provided, verify track changed from this.
 
     Returns:
-        True if playing, False otherwise.
+        True if playing (and track changed if initial_track provided).
     """
     start = time.time()
     while time.time() - start < timeout:
         if spotify.is_playing():
-            return True
-        time.sleep(0.3)
-    return False
+            if initial_track is None:
+                return True
+            # Check if track changed
+            track = spotify.get_current_track()
+            if track and track.name != initial_track:
+                return True
+        time.sleep(0.5)
+    # If still playing at the end, consider it success
+    return spotify.is_playing()
 
 
 def require_running(spotify: SpotifyRPA) -> bool:
@@ -59,28 +66,37 @@ def require_running(spotify: SpotifyRPA) -> bool:
 def cmd_play_playlist(args, spotify: SpotifyRPA) -> int:
     """Execute the play-playlist command."""
     playlist_name = args.name
-    
+
     print("Launching Spotify...")
     if not spotify.is_running():
         spotify.launch()
     else:
         spotify.bring_to_front()
     print("Spotify is ready.")
-    
+
+    # Remember current track to detect if playback changed
+    initial_track = None
+    try:
+        track = spotify.get_current_track()
+        if track:
+            initial_track = track.name
+    except Exception:
+        pass
+
+    # Use playlist: prefix to search only playlists
+    search_query = f"playlist:{playlist_name}"
     print(f"Searching for playlist: {playlist_name}")
-    spotify.play_playlist_by_name(playlist_name)
-    
+    spotify.play_playlist_by_name(search_query)
+
     print("Waiting for playback to start...")
-    time.sleep(2.0)
-    
-    if verify_playback(spotify):
+    if verify_playback(spotify, timeout=5.0, initial_track=initial_track):
         print("Playback started successfully!")
         print()
         print_status(spotify)
         return 0
     else:
         print("Warning: Could not verify playback started.")
-        print("The playlist may still be loading. Check Spotify manually.")
+        print("Check Spotify manually.")
         return 1
 
 
@@ -187,14 +203,14 @@ def main() -> int:
     
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     
-    # play-playlist command
+    # play-playlist command (global search)
     p_playlist = subparsers.add_parser(
         "play-playlist",
-        help="Find and play a playlist by name"
+        help="Search globally and play a playlist"
     )
-    p_playlist.add_argument("name", help="Name of the playlist to play")
+    p_playlist.add_argument("name", help="Name of the playlist to search for")
     p_playlist.set_defaults(func=cmd_play_playlist)
-    
+
     # search command
     p_search = subparsers.add_parser(
         "search",

@@ -270,10 +270,14 @@ class MacOSSpotifyController(SpotifyControllerBase):
         self._run_applescript(script)
         time.sleep(len(text) * delay_per_char + self._ui_delay)
     
-    # =========================================================================
-    # Utility
-    # =========================================================================
-    
-    def get_spotify_uri_from_clipboard(self) -> str:
-        """Get a Spotify URI from the clipboard."""
-        return self._run_applescript('the clipboard as text')
+    def play_selected_search_result(self) -> None:
+        """Play the selected search result from the beginning and show it."""
+        # Turn off shuffle to ensure playback starts from first track
+        self.set_shuffling(False)
+        time.sleep(0.2)
+        # Shift+Enter plays the highlighted search result
+        self._key_code(self._get_return_key_code(), ["shift"])
+        time.sleep(0.5)
+        # Enter to open/show the playlist
+        self._press_return()
+        time.sleep(0.3)

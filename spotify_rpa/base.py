@@ -224,66 +224,33 @@ class SpotifyControllerBase(ABC):
         if wait_for_results:
             time.sleep(self.DEFAULT_SEARCH_DELAY)
     
-    def select_first_search_result(self) -> None:
-        """Select the first result from the search dropdown."""
-        time.sleep(0.3)
-        self._press_down_arrow()
-        time.sleep(0.2)
-        self._press_return()
-        time.sleep(self._ui_delay)
-    
-    def navigate_to_first_song(self) -> None:
-        """Navigate to and play the first song in the current view."""
-        for _ in range(3):
-            self._press_tab()
-            time.sleep(0.1)
-        self._press_return()
-    
     def play_playlist_by_name(
         self,
         playlist_name: str,
-        play_first_song: bool = True,
         search_delay: float = 2.0
     ) -> None:
         """
         Find a playlist by name and play it.
-        
-        This is the main method for the RPA task: finding a playlist by name
-        and playing it using UI automation.
-        
+
+        This is the main RPA task: open Spotify, search for a playlist,
+        and start playing the first song.
+
         Args:
-            playlist_name: The name of the playlist to find and play.
-            play_first_song: If True, explicitly start playing the first song.
-            search_delay: Time to wait for search results.
+            playlist_name: The search query (use "playlist:name" for playlists only).
+            search_delay: Time to wait for search results to load.
         """
         if not self.is_running():
             self.launch()
         else:
             self.bring_to_front()
-        
+
+        # Search for the playlist
         self.search(playlist_name, wait_for_results=False)
         time.sleep(search_delay)
-        
-        self.select_first_search_result()
-        time.sleep(1.0)
-        
-        if play_first_song:
-            time.sleep(0.5)
+
+        # Play the selected result (Shift+Enter) and show it (Enter)
+        if hasattr(self, 'play_selected_search_result'):
+            self.play_selected_search_result()
+        else:
+            # Fallback: just open the result
             self._press_return()
-    
-    def search_and_play(self, query: str) -> None:
-        """Search for something and immediately play the first result."""
-        self.search(query)
-        self.select_first_search_result()
-        time.sleep(0.5)
-        self.play()
-    
-    def toggle_shuffle(self) -> None:
-        """Toggle shuffle mode."""
-        self.bring_to_front()
-        self._keystroke("s", [self._get_command_modifier()])
-    
-    def toggle_repeat(self) -> None:
-        """Toggle repeat mode."""
-        self.bring_to_front()
-        self._keystroke("r", [self._get_command_modifier()])
